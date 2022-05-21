@@ -1,25 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useQuery, useMutation } from "@apollo/client";
+import { GET_USERS, GET_USER_BY_ID } from "./queries";
+import { LOGIN_MUTATION } from "./mutations";
 
-function App() {
+const App = () => {
+  // const { loading, error, data } = useQuery(GET_USER_BY_ID, {
+  //   variables: {
+  //     id: "62843bb43450a9618fd2fa73",
+  //   },
+  // });
+  const [login, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+
+  console.log({ data, loading, error });
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+        {loading && <img src={logo} className="App-logo" alt="logo" />}
+        {error && <p>Error</p>}
+        Usuários
+        <ol>
+          {data && data.users && data.users.map((user) => <li>{user.name}</li>)}
+        </ol>
+        <button
+          onClick={(e) => {
+            login({
+              variables: { email: "maria@site.com", password: "123456" },
+            });
+          }}
         >
-          Learn React
-        </a>
+          LOGIN
+        </button>
       </header>
     </div>
   );
-}
+};
 
 export default App;
